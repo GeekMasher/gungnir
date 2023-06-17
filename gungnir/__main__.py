@@ -11,15 +11,29 @@ logger = logging.getLogger("gungnir")
 
 
 parser = argparse.ArgumentParser(__title__, description=__description__)
-parser.add_argument("--debug", action="store_true")
-parser.add_argument("--banner", action="store_true")
-parser.add_argument("--version", action="store_true")
+parser.add_argument("--debug", action="store_true", help="Enable Debug mode")
+parser.add_argument("--banner", action="store_true", help="Show banner")
+parser.add_argument("--version", action="store_true", help="Show version")
 
-parser.add_argument("--container", action="store_true")
-parser.add_argument("--disable-banner", action="store_true")
-parser.add_argument("--hostname", default=os.environ.get("HOSTNAME"))
-parser.add_argument("-t", "--token", default=os.environ.get("DEPENDENCYTRACK_TOKEN"))
-parser.add_argument("-i", "--instance", default=os.environ.get("DEPENDENCYTRACK_URL"))
+parser.add_argument("--container", action="store_true", help="Enable container mode")
+parser.add_argument("--disable-banner", action="store_true", help="Disable banner")
+parser.add_argument(
+    "--hostname",
+    default=os.environ.get("HOSTNAME"),
+    help="Hostname (mainly for containers)",
+)
+parser.add_argument(
+    "-t",
+    "--token",
+    default=os.environ.get("DEPENDENCYTRACK_TOKEN"),
+    help="DependencyTrack Token",
+)
+parser.add_argument(
+    "-i",
+    "--instance",
+    default=os.environ.get("DEPENDENCYTRACK_URL"),
+    help="DependencyTrack Instance",
+)
 
 
 arguments = parser.parse_args()
