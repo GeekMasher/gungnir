@@ -31,6 +31,11 @@ class DependencyTrack:
             f"{DependencyTrack.instance}/api/{DependencyTrack.version}"
         )
 
+    @staticmethod
+    def getVersion() -> str:
+        resp = DependencyTrack.session.get(f"{DependencyTrack.instance}/api/version")
+        return resp.json().get("version", "NA")
+
 
 @dataclass
 class Project:
@@ -63,9 +68,7 @@ class Project:
 
     def lookup(self):
         url = f"{DependencyTrack.base}/project"
-        resp = DependencyTrack.session.get(
-            url, params={"name": self.name}
-        )
+        resp = DependencyTrack.session.get(url, params={"name": self.name})
         if resp.status_code == 404:
             self.present = False
             return
@@ -94,8 +97,8 @@ class Project:
                 "name": self.name,
                 "parent": parent,
                 "tags": self.tags,
-                "version": self.version
-            }
+                "version": self.version,
+            },
         )
 
         if resp.status_code == 403:
@@ -105,15 +108,14 @@ class Project:
             print(resp.status_code)
             print(resp.content)
             raise Exception("Failed to create Project")
-        
+
         # TODO: does `resp.json()` have all the things we need
         self.lookup()
 
     def update(self):
-        """Update Project in Dependency Track """
+        """Update Project in Dependency Track"""
         resp = DependencyTrack.session.post(
-            f"{DependencyTrack.base}/project",
-            json=self.toDict()
+            f"{DependencyTrack.base}/project", json=self.toDict()
         )
 
         if resp.status_code != 200:
@@ -132,7 +134,7 @@ class Project:
             print(resp.status_code)
             print(resp.content)
             raise Exception("Failed to get Project children")
-        
+
         children = []
         for child in resp.json():
             proj = Project(**child)
@@ -147,16 +149,11 @@ class Project:
     def uploadSbom(self, bom: dict):
         b64 = b64encode(json.dumps(bom).encode())
         resp = DependencyTrack.session.put(
-            f"{DependencyTrack.base}/bom", 
-            json={
-                "project": self.uuid,
-                "bom": b64.decode()
-            }
+            f"{DependencyTrack.base}/bom",
+            json={"project": self.uuid, "bom": b64.decode()},
         )
 
         if resp.status_code != 200:
             print(resp.status_code)
             print(resp.content)
             raise Exception("Failed to upload SBOM")
-
-

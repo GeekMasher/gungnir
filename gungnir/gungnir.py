@@ -7,19 +7,23 @@ import docker
 from gungnir.syft import Syft
 from gungnir.dependencytrack import Project
 
+logger = logging.getLogger("gungnir.gungnir")
+
 
 class Gungnir:
-    def __init__(self) -> None:
+    def __init__(self, hostname: str, container: bool = False) -> None:
         self.active_projects = []
         self.client = docker.from_env()
         self.syft = Syft()
 
         # host
-        self.host = Project(platform.node())
-        host_version = f"{platform.system()}-{platform.release()}"
-        if self.host.version != host_version:
-            self.host.version = host_version
-            self.host.update()
+        self.host = Project(hostname)
+        if not container:
+            host_version = f"{platform.system()}-{platform.release()}"
+            logger.debug(f" >>> {host_version}")
+            if self.host.version != host_version:
+                self.host.version = host_version
+                self.host.update()
 
         self.projects = self.generateProjects()
 
@@ -35,9 +39,16 @@ class Gungnir:
 
             # create a new project
             if not project.present:
+                logger.info(f"Creating new project :: {name}")
                 project.version = version
                 project.classifier = "CONTAINER"
                 project.create()
+
+            # re-activate project
+            if not project.active:
+                logger.info(f"Activating Project :: {project.name}")
+                project.active = True
+                project.update()
 
             projects.append(project)
 
@@ -45,17 +56,18 @@ class Gungnir:
 
     def processContainers(self):
         for project in self.projects:
-            container = self.client.containers.get(project.name) 
+            container = self.client.containers.get(project.name)
             version = container.image.short_id
             image_id = container.image.id
 
-            logging.info(f"Processing container :: {project.name}")
+            logger.info(f"Processing container :: {project.name}")
 
             if project.version != version:
                 # upload BOM only if version is new / different
-                logging.info("Remote version is different to local, generating BOM")
-                bom = self.syft.generateSBOM(image_id, name)
-                logging.info("Uploading BOM to remote DependencyTrack")
+                logger.info("Remote version is different to local")
+                bom = self.syft.generateSBOM(image_id, project.name)
+
+                logger.info("Uploading BOM to remote DependencyTrack")
                 project.uploadSbom(bom)
 
     def checkHostContainers(self):
@@ -63,9 +75,8 @@ class Gungnir:
             if project.name in self.active_projects:
                 logging.debug(f"Project active :: {project}")
                 continue
-            
+
             if project.active:
                 # deactivate project
                 logging.warning(f"Deactivating Projects as offline :: {project}")
                 project.deactivate()
-

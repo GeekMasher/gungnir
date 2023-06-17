@@ -2,7 +2,7 @@ import os
 import logging
 import argparse
 
-from gungnir import __title__, __description__, __banner__
+from gungnir import __title__, __description__, __banner__, __version__
 from gungnir.dependencytrack import DependencyTrack
 from gungnir.gungnir import Gungnir
 
@@ -12,34 +12,55 @@ logger = logging.getLogger("gungnir")
 
 parser = argparse.ArgumentParser(__title__, description=__description__)
 parser.add_argument("--debug", action="store_true")
+parser.add_argument("--banner", action="store_true")
+parser.add_argument("--version", action="store_true")
 
+parser.add_argument("--container", action="store_true")
+parser.add_argument("--disable-banner", action="store_true")
+parser.add_argument("--hostname", default=os.environ.get("HOSTNAME"))
 parser.add_argument("-t", "--token", default=os.environ.get("DEPENDENCYTRACK_TOKEN"))
 parser.add_argument("-i", "--instance", default=os.environ.get("DEPENDENCYTRACK_URL"))
 
 
 arguments = parser.parse_args()
 
+
+if arguments.version:
+    print(__version__)
+    exit(0)
+elif arguments.banner:
+    print(__banner__)
+    exit(0)
+
+if arguments.container:
+    arguments.disable_banner = True
+
 logging.basicConfig(
     level=logging.DEBUG if arguments.debug or os.environ.get("DEBUG") else logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 
-print(__banner__)
+if not arguments.disable_banner:
+    print(__banner__, flush=True)
 
 DependencyTrack.init(arguments.instance, arguments.token)
+logger.info(
+    f"DependencyTrack Instance :: {DependencyTrack.instance} ({DependencyTrack.getVersion()})"
+)
 
-gungnir = Gungnir()
+gungnir = Gungnir(hostname=arguments.hostname, container=arguments.container)
 
 
-print(f"Host :: {gungnir.host.name} ({gungnir.host.version})\n")
+logger.info(f"Host :: {gungnir.host.name} ({gungnir.host.version})")
 
-print("List of Local Containers:\n")
+logger.info("List of Local Containers:")
 for container in gungnir.projects:
-    print(f" > Container('{container.name}', '{container.version}')")
+    logger.info(f" > Container('{container.name}', '{container.version}')")
 
-print("\nProcessing Containers:\n")
+logger.info("Processing Containers:")
 gungnir.processContainers()
 
-print("\nChecking Host DependencyTrack Children:\n")
+logger.info("Checking Host DependencyTrack Children:")
 gungnir.checkHostContainers()
 
+logger.info("Completed!")
