@@ -18,6 +18,12 @@ class Gungnir:
 
         # host
         self.host = Project(hostname)
+        if not self.host.present:
+            logger.info(f"Creating new Host project :: {hostname}")
+            self.host.version = "1"
+            self.host.classifier = "OPERATING_SYSTEM"
+            self.host.create()
+
         if not container:
             host_version = f"{platform.system()}-{platform.release()}"
             logger.debug(f" >>> {host_version}")
