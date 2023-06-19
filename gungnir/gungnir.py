@@ -40,7 +40,7 @@ class Gungnir:
             # create a new project
             if not project.present:
                 logger.info(f"Creating new project :: {name}")
-                project.version = version
+                project.version = "1"
                 project.classifier = "CONTAINER"
                 project.create()
 
