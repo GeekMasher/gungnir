@@ -27,6 +27,9 @@ dependencies = [
     "websocket-client==1.5.2"
 ]
 
+[tool.setuptools.packages.find]
+where = ["gungnir"]
+
 [project.urls]
 "Homepage" = "https://github.com/GeekMasher/gungnir"
 "Bug Tracker" = "https://github.com/GeekMasher/gungnir/issues"
