@@ -1,0 +1,43 @@
+name: Python Package
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip pipenv
+        pipenv sync -d
+
+    - name: Lint with Black
+      run: |
+        pipenv run lint
+
+    - name: Build
+      run: |
+        pipenv run build
+
+    - name: Test with unittest
+      run: |
+        export PYTHONPATH=$PWD/src
+        pipenv run test
