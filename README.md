@@ -15,6 +15,10 @@
 
 Gungnir is a Homelab Automation Bot to Guard your very own Asgard from the dangerous world of out of date components.
 
+## Example
+
+![DependencyTrack Example](./assets/dependency-track-example.png)
+
 ## Usage
 
 ### CLI
