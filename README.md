@@ -32,7 +32,7 @@ python -m gungnir --help
 ```
 
 ```
-Gungnir - Homelab Automation Bot to Guard your very own Asgard
+Gungnir - Homelab Automation Tool to Guard your very own Asgard
 
 options:
   -h, --help            show this help message and exit
@@ -42,6 +42,8 @@ options:
   --container           Enable container mode
   --disable-banner      Disable banner
   --hostname HOSTNAME   Hostname (mainly for containers)
+
+DependencyTrack:
   -t TOKEN, --token TOKEN
                         DependencyTrack Token
   -i INSTANCE, --instance INSTANCE
