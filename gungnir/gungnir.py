@@ -4,8 +4,9 @@ from typing import List
 
 import docker
 
+from gungnir.dependencytrack.project import Project
 from gungnir.syft import Syft
-from gungnir.dependencytrack import Project
+from gungnir.project import OperatingSystem, Container
 
 logger = logging.getLogger("gungnir.gungnir")
 
@@ -17,23 +18,27 @@ class Gungnir:
         self.syft = Syft()
 
         # host
-        self.host = Project(hostname)
-        if not self.host.present:
-            logger.info(f"Creating new Host project :: {hostname}")
-            self.host.version = "1"
-            self.host.classifier = "OPERATING_SYSTEM"
-            self.host.create()
+        self.host = OperatingSystem(hostname)
+        Project.lookup(self.host)
+
+        logger.debug(f"Host Project :: {self.host}")
+
+        if not self.host.uuid:
+            Project.create(self.host)
 
         if not container:
             host_version = f"{platform.system()}-{platform.release()}"
-            logger.debug(f" >>> {host_version}")
             if self.host.version != host_version:
-                self.host.version = host_version
-                self.host.update()
+                self.host.platform = host_version
+                Project.update(self.host)
+
+        # host remote containers
+        Project.getChildren(self.host)
+        logger.info(f"Host Sub-projects :: {len(self.host.containers)}")
 
         self.projects = self.generateProjects()
 
-    def generateProjects(self) -> List[Project]:
+    def generateProjects(self) -> List[Container]:
         projects = []
         for container in self.client.containers.list():
             name = container.name
@@ -41,20 +46,20 @@ class Gungnir:
 
             self.active_projects.append(name)
 
-            project = Project(name, parent=self.host)
+            project = next(
+                (s for s in self.host.containers if s.name == name),
+                Container(name, "1", parent=self.host),
+            )
 
             # create a new project
-            if not project.present:
-                logger.info(f"Creating new project :: {name}")
-                project.version = "1"
-                project.classifier = "CONTAINER"
-                project.create()
+            if not project.active:
+                Project.create(project)
 
             # re-activate project
             if not project.active:
                 logger.info(f"Activating Project :: {project.name}")
                 project.active = True
-                project.update()
+                Project.update(project)
 
             projects.append(project)
 
@@ -66,18 +71,28 @@ class Gungnir:
             version = container.image.short_id
             image_id = container.image.id
 
-            logger.info(f"Processing container :: {project.name}")
+            logger.info(f"Processing container :: {project.name} ({version})")
 
-            if project.version != version:
+            if project.version != f"{version}-{project.parent.name}":
                 # upload BOM only if version is new / different
-                logger.info("Remote version is different to local")
+                logger.info(f"Remote version is different to local :: {version}")
+
                 bom = self.syft.generateSBOM(image_id, project.name)
 
                 logger.info("Uploading BOM to remote DependencyTrack")
-                project.uploadSbom(bom)
+                Project.uploadSbom(project, bom)
+
+                # once uploaded, update version to match
+                project.sha = version
+                Project.update(project)
+
+            else:
+                logging.debug(
+                    f"Same version used since last process :: {project.version}"
+                )
 
     def checkHostContainers(self):
-        for project in self.host.getChildren():
+        for project in self.host.containers:
             if project.name in self.active_projects:
                 logging.debug(f"Project active :: {project}")
                 continue
@@ -85,4 +100,5 @@ class Gungnir:
             if project.active:
                 # deactivate project
                 logging.warning(f"Deactivating Projects as offline :: {project}")
-                project.deactivate()
+                project.active = False
+                Project.update(project)

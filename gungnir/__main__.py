@@ -3,7 +3,7 @@ import logging
 import argparse
 
 from gungnir import __title__, __description__, __banner__, __version__
-from gungnir.dependencytrack import DependencyTrack
+from gungnir.dependencytrack.api import DependencyTrack
 from gungnir.gungnir import Gungnir
 
 
@@ -17,18 +17,21 @@ parser.add_argument("--version", action="store_true", help="Show version")
 
 parser.add_argument("--container", action="store_true", help="Enable container mode")
 parser.add_argument("--disable-banner", action="store_true", help="Disable banner")
+
 parser.add_argument(
     "--hostname",
     default=os.environ.get("HOSTNAME"),
     help="Hostname (mainly for containers)",
 )
-parser.add_argument(
+
+parser_dependency_track = parser.add_argument_group("DependencyTrack")
+parser_dependency_track.add_argument(
     "-t",
     "--token",
     default=os.environ.get("DEPENDENCYTRACK_TOKEN"),
     help="DependencyTrack Token",
 )
-parser.add_argument(
+parser_dependency_track.add_argument(
     "-i",
     "--instance",
     default=os.environ.get("DEPENDENCYTRACK_URL"),
@@ -68,7 +71,7 @@ gungnir = Gungnir(hostname=arguments.hostname, container=arguments.container)
 logger.info(f"Host :: {gungnir.host.name} ({gungnir.host.version})")
 
 logger.info("List of Local Containers:")
-for container in gungnir.projects:
+for container in gungnir.host.containers:
     logger.info(f" > Container('{container.name}', '{container.version}')")
 
 logger.info("Processing Containers:")
