@@ -1,0 +1,8 @@
+name: "CodeQL Configuration"
+
+packs:
+  - advanced-security/codeql-python
+
+paths-ignore:
+  - vendor/**
+
