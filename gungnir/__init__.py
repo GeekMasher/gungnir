@@ -1,7 +1,7 @@
 __name__ = "gungnir"
 __title__ = "Gungnir"
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __description__ = "Gungnir - Homelab Automation Bot to Guard your very own Asgard"
 __summary__ = "Homelab Automation Bot to Guard your very own Asgard"
