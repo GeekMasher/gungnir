@@ -28,6 +28,11 @@ Gungnir is a Homelab Automation Bot to Guard your very own Asgard from the dange
 - Python 3.9+
 - [Syft](https://github.com/anchore/syft) (generate bill of materials)
 
+**Install (pip):**
+
+```bash
+pip install gungnir
+```
 
 **Help:**
 
