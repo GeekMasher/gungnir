@@ -24,7 +24,7 @@ dependencies = [
     "packaging==23.1",
     "requests==2.31.0",
     "urllib3==2.0.3",
-    "websocket-client==1.5.2"
+    "websocket-client==1.6.0"
 ]
 
 [tool.setuptools.packages.find]
