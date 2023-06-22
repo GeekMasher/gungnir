@@ -4,7 +4,7 @@ set -e
 
 if [[ $1 == "setup" ]]; then
     echo "Setting up cron..."
-    CRON=${CRON:=15 * * * *}
+    CRON=${CRON:=0 * * * *}  # every hour
     echo "Cron used :: '${CRON}'"
 
     echo "${CRON} /app/entrypoint.sh run" >> /etc/crontabs/gungnir
