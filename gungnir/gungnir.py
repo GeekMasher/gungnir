@@ -47,7 +47,6 @@ class Gungnir:
         projects = []
         for container in self.client.containers.list():
             name = container.name
-            version = container.image.short_id
 
             self.active_projects.append(name)
 
