@@ -1,9 +1,7 @@
 [project]
 name = "gungnir"
-version = "0.2.0"
-authors = [
-  { name="GeekMasher" },
-]
+version = "0.2.1"
+authors = [{ name = "GeekMasher" }]
 description = "Homelab Automation Bot to Guard your very own Asgard"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -24,7 +22,7 @@ dependencies = [
     "packaging==23.1",
     "requests==2.31.0",
     "urllib3==2.0.3",
-    "websocket-client==1.6.0"
+    "websocket-client==1.6.0",
 ]
 
 [tool.setuptools.packages.find]
@@ -37,4 +35,3 @@ where = ["gungnir"]
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
-
