@@ -1,3 +1,4 @@
+"""Dependency Track Project."""
 import json
 import base64
 import logging
@@ -9,9 +10,11 @@ logger = logging.getLogger("gungnir.dependencytrack")
 
 
 class Project:
+    """Dependency Track Project."""
+
     @staticmethod
     def lookup(project: OperatingSystem | Container):
-        """Lookup project based on name"""
+        """Lookup project based on name."""
 
         if isinstance(project, Container):
             # get all the children
@@ -37,7 +40,7 @@ class Project:
 
     @staticmethod
     def create(project: OperatingSystem | Container):
-        """Create a new Project in DependencyTrack
+        """Create a new Project in DependencyTrack.
 
         Required access to `PORTFOLIO_MANAGEMENT` permission todo this
         """
@@ -65,7 +68,7 @@ class Project:
 
     @staticmethod
     def update(project: OperatingSystem | Container):
-        """Update Project in Dependency Track"""
+        """Update Project in Dependency Track."""
         logger.debug(f"Updating project :: {project.uuid}")
 
         parent = None
@@ -89,7 +92,7 @@ class Project:
 
     @staticmethod
     def getChildren(project: OperatingSystem):
-        """Get Project children"""
+        """Get Project children."""
         logger.debug(f"Get Children for :: {project.uuid}")
         resp = DependencyTrack.session.get(
             f"{DependencyTrack.base}/project/{project.uuid}/children"
@@ -110,6 +113,7 @@ class Project:
 
     @staticmethod
     def uploadSbom(project: Container, bom: dict):
+        """Upload SBOM to Dependency Track API."""
         b64 = base64.b64encode(json.dumps(bom).encode())
         payload = {"project": project.uuid, "bom": b64.decode()}
         resp = DependencyTrack.session.put(f"{DependencyTrack.base}/bom", json=payload)

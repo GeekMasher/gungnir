@@ -1,3 +1,4 @@
+"""Gungnir."""
 import logging
 import platform
 from typing import List
@@ -12,7 +13,10 @@ logger = logging.getLogger("gungnir.gungnir")
 
 
 class Gungnir:
+    """Gungnir class."""
+
     def __init__(self, hostname: str, container: bool = False) -> None:
+        """Initialise Gungnir."""
         self.active_projects = []
         self.client = docker.from_env()
         self.syft = Syft()
@@ -39,6 +43,7 @@ class Gungnir:
         self.projects = self.generateProjects()
 
     def generateProjects(self) -> List[Container]:
+        """Generate the Projects."""
         projects = []
         for container in self.client.containers.list():
             name = container.name
@@ -66,14 +71,17 @@ class Gungnir:
         return projects
 
     def processContainers(self):
+        """Process Container."""
         for project in self.projects:
             container = self.client.containers.get(project.name)
-            version = container.image.short_id
+            sha = container.image.short_id
             image_id = container.image.id
 
+            version = f"{sha}-{project.parent.name}"
             logger.info(f"Processing container :: {project.name} ({version})")
+            logger.debug(f"Checking Versions :: {project.version} -> {version}")
 
-            if project.version != f"{version}-{project.parent.name}":
+            if project.version != version:
                 # upload BOM only if version is new / different
                 logger.info(f"Remote version is different to local :: {version}")
 
@@ -92,6 +100,7 @@ class Gungnir:
                 )
 
     def checkHostContainers(self):
+        """Check Host Containers."""
         for project in self.host.containers:
             if project.name in self.active_projects:
                 logging.debug(f"Project active :: {project}")
