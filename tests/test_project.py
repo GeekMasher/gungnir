@@ -1,4 +1,3 @@
-
 import platform
 import unittest
 
@@ -10,5 +9,3 @@ class TestProjects(unittest.TestCase):
         os = OperatingSystem("testing")
         # defaults
         self.assertEqual(os.version, platform.release())
-
-
