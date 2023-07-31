@@ -15,4 +15,4 @@ jobs:
     - name: Quibble Scan
       run: |
         cargo install quibble
-        quibble compose -f all
+        quibble compose -f all -p ./docker-compose.yml
