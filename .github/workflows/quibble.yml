@@ -1,0 +1,24 @@
+name: Quibble
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Quibble Scan
+      run: |
+        cargo install quibble
+        quibble compose -f all -p ./ --format sarif --disable-fail -o quibble.sarif
+
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: quibble.sarif
