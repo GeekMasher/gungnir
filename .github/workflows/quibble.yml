@@ -15,4 +15,10 @@ jobs:
     - name: Quibble Scan
       run: |
         cargo install quibble
-        quibble compose -f all -p ./docker-compose.yml
+        quibble compose -f all -p ./ --format sarif -o quibble.sarif
+
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: quibble.sarif
