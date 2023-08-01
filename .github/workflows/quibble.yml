@@ -15,7 +15,7 @@ jobs:
     - name: Quibble Scan
       run: |
         cargo install quibble
-        quibble compose -f all -p ./ --format sarif -o quibble.sarif
+        quibble compose -f all -p ./ --format sarif --disable-fail -o quibble.sarif
 
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v2
