@@ -15,7 +15,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "certifi==2023.7.22",
+    "certifi==2023.11.17",
     "charset-normalizer==3.3.2",
     "docker==6.1.3",
     "idna==3.4",
