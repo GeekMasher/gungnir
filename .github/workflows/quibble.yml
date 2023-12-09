@@ -15,10 +15,10 @@ jobs:
       security-events: write
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Quibble Scan
-      uses: GeekMasher/quibble@0.3.1
+      uses: GeekMasher/quibble@0.3.3
 
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v2
