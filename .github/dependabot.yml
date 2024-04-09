@@ -11,6 +11,12 @@ updates:
       interval: "weekly"
     reviewers:
       - "geekmasher"
+    target-branch: "main"
+    commit-message:
+      prefix: deps
+      prefix-development: chore
+    labels:
+      - "Dependencies"
     groups:
       production-dependencies:
         dependency-type: "production"
@@ -23,6 +29,12 @@ updates:
       interval: "weekly"
     reviewers:
       - "geekmasher"
+    target-branch: "main"
+    commit-message:
+      prefix: deps
+      prefix-development: chore
+    labels:
+      - "Dependencies"
     groups:
       production-dependencies:
         dependency-type: "production"
