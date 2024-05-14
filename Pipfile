@@ -12,7 +12,7 @@ twine = "*"
 black = "*"
 
 [requires]
-python_version = "3.1"
+python_version = "3.11"
 
 [scripts]
 main = "python -m gungnir"
