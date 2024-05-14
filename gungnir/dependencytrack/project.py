@@ -1,4 +1,5 @@
 """Dependency Track Project."""
+
 import json
 import base64
 import logging

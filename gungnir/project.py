@@ -1,4 +1,5 @@
 """Gungnir models."""
+
 import platform
 from typing import Optional, List
 from dataclasses import dataclass, field

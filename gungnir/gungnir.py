@@ -1,4 +1,5 @@
 """Gungnir."""
+
 import logging
 import platform
 from typing import List
