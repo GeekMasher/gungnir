@@ -1,4 +1,5 @@
 """Gungnir."""
+
 __name__ = "gungnir"
 __title__ = "Gungnir"
 

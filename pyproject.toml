@@ -1,6 +1,6 @@
 [project]
 name = "gungnir"
-version = "0.2.2"
+version = "0.3.0"
 authors = [{ name = "GeekMasher" }]
 description = "Homelab Automation Bot to Guard your very own Asgard"
 readme = "README.md"

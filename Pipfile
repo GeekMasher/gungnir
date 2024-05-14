@@ -11,9 +11,6 @@ build = "*"
 twine = "*"
 black = "*"
 
-[requires]
-python_version = "3.10"
-
 [scripts]
 main = "python -m gungnir"
 build = "python -m build"

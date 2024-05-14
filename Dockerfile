@@ -1,4 +1,4 @@
-FROM python:alpine3.17
+FROM python:3.11-alpine
 
 # install syft
 RUN apk add bash curl && \

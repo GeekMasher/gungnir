@@ -2,6 +2,7 @@
 A Homelab Automation Bot to Guard your very own Asgard from the dangerous world of
 out of date components.
 """
+
 import os
 import logging
 import argparse
