@@ -17,10 +17,10 @@ classifiers = [
 dependencies = [
     "certifi==2024.2.2",
     "charset-normalizer==3.3.2",
-    "docker==7.0.0",
+    "docker==7.1.0",
     "idna==3.7",
     "packaging==24.0",
-    "requests==2.31.0",
+    "requests==2.32.2",
     "urllib3==2.2.1",
     "websocket-client==1.8.0",
 ]
