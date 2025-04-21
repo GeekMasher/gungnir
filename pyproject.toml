@@ -19,7 +19,7 @@ dependencies = [
     "charset-normalizer==3.4.1",
     "docker==7.1.0",
     "idna==3.10",
-    "packaging==24.2",
+    "packaging==25.0",
     "requests==2.32.3",
     "urllib3==2.4.0",
     "websocket-client==1.8.0",
