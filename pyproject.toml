@@ -16,7 +16,7 @@ classifiers = [
 ]
 dependencies = [
     "certifi==2025.4.26",
-    "charset-normalizer==3.4.1",
+    "charset-normalizer==3.4.2",
     "docker==7.1.0",
     "idna==3.10",
     "packaging==25.0",
